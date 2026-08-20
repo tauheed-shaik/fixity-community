@@ -155,7 +155,7 @@ export default function Hero() {
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.35, duration: 0.7 }}
-                src="/hero-image.jpg"
+                src="/hero-image.png"
                 alt="FixityEdx community learners collaborating"
                 className="relative z-10 w-full h-auto object-cover rounded-2xl"
                 style={{
