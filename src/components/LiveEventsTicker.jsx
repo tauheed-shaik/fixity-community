@@ -27,39 +27,58 @@ export default function LiveEventsTicker() {
 
   if (!items.length) return null
 
-  const visibleNotifications = liveEvents.filter((event) => !dismissed.includes(event.id)).slice(0, 2)
+  const activeEvent = liveEvents.find((event) => !dismissed.includes(event.id))
 
   const duration = Math.max(20, half.length * 6)
 
   return (
     <>
-      {visibleNotifications.length > 0 && (
-        <aside className="fixed right-3 top-[84px] z-50 w-[calc(100%-1.5rem)] max-w-sm space-y-2 sm:right-5 sm:top-5 sm:w-96" aria-label="Live event notifications">
-          {visibleNotifications.map((event) => (
-            <div key={event.id} className="rounded-xl border border-green/40 bg-deep-navy/95 p-4 text-white shadow-2xl backdrop-blur-md">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 rounded-full bg-green/15 p-2 text-green">
-                  <Radio className="h-4 w-4 animate-pulse" />
+      {activeEvent && (
+        <aside
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px] sm:p-6"
+          aria-label="Live event notification"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setDismissed((current) => [...current, activeEvent.id])}
+        >
+          <div
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-green/40 bg-deep-navy text-white shadow-2xl shadow-black/40"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="h-1.5 bg-green" />
+            <div className="p-6 sm:p-8">
+              <button
+                type="button"
+                aria-label={`Dismiss ${activeEvent.title} notification`}
+                onClick={() => setDismissed((current) => [...current, activeEvent.id])}
+                className="absolute right-4 top-4 rounded-full p-1.5 text-white/55 hover:bg-white/10 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-4 rounded-full bg-green/15 p-3 text-green">
+                  <Radio className="h-6 w-6 animate-pulse" />
                 </div>
-                <button type="button" onClick={() => focusEvent(event.id)} className="min-w-0 flex-1 text-left">
-                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-green">Live now</p>
-                  <h2 className="mt-1 truncate text-sm font-bold hover:text-primary-yellow">{event.title}</h2>
-                  <div className="mt-2 space-y-1 text-[11px] text-white/60">
-                    <p className="flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5 shrink-0" />{event.time}</p>
-                    <p className="flex items-center gap-1.5 truncate"><MapPin className="h-3.5 w-3.5 shrink-0" />{event.location}</p>
-                  </div>
-                </button>
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-green">Live event now</p>
+                <h2 className="mt-2 text-xl font-extrabold sm:text-2xl">{activeEvent.title}</h2>
+                {activeEvent.speaker && <p className="mt-2 text-sm text-white/60">{activeEvent.speaker}</p>}
+                <div className="mt-5 grid w-full gap-2 border-y border-white/10 py-4 text-left text-xs text-white/65 sm:grid-cols-2 sm:gap-4">
+                  <p className="flex items-center gap-2"><CalendarDays className="h-4 w-4 shrink-0 text-green" />{activeEvent.time}</p>
+                  <p className="flex items-center gap-2 truncate"><MapPin className="h-4 w-4 shrink-0 text-green" />{activeEvent.location}</p>
+                </div>
                 <button
                   type="button"
-                  aria-label={`Dismiss ${event.title} notification`}
-                  onClick={() => setDismissed((current) => [...current, event.id])}
-                  className="rounded-md p-1 text-white/50 hover:bg-white/10 hover:text-white"
+                  onClick={() => {
+                    setDismissed((current) => [...current, activeEvent.id])
+                    focusEvent(activeEvent.id)
+                  }}
+                  className="mt-6 w-full rounded-lg bg-primary-yellow px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-dark-navy transition-transform hover:scale-[1.02]"
                 >
-                  <X className="h-4 w-4" />
+                  View event details
                 </button>
               </div>
             </div>
-          ))}
+          </div>
         </aside>
       )}
 
