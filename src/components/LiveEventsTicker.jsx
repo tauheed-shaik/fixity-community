@@ -3,7 +3,7 @@ import { CalendarDays, MapPin, Radio, X } from 'lucide-react'
 import { useEvents } from '../context/EventsContext'
 
 export default function LiveEventsTicker() {
-  const { liveEvents, focusEvent } = useEvents()
+  const { events, liveEvents, focusEvent } = useEvents()
   const [paused, setPaused] = useState(false)
   const [dismissed, setDismissed] = useState([])
 
@@ -27,7 +27,9 @@ export default function LiveEventsTicker() {
 
   if (!items.length) return null
 
-  const activeEvent = liveEvents.find((event) => !dismissed.includes(event.id))
+  const activeEvent = events.find(
+    (event) => !dismissed.includes(event.id) && (event.live || new Date(event.startAt) > new Date())
+  )
 
   const duration = Math.max(20, half.length * 6)
 
@@ -59,7 +61,9 @@ export default function LiveEventsTicker() {
                 <div className="mb-4 rounded-full bg-green/15 p-3 text-green">
                   <Radio className="h-6 w-6 animate-pulse" />
                 </div>
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-green">Live event now</p>
+                <p className={`text-[10px] font-extrabold uppercase tracking-[0.2em] ${activeEvent.live ? 'text-green' : 'text-primary-yellow'}`}>
+                  {activeEvent.live ? 'Live event now' : 'Upcoming event'}
+                </p>
                 <h2 className="mt-2 text-xl font-extrabold sm:text-2xl">{activeEvent.title}</h2>
                 {activeEvent.speaker && <p className="mt-2 text-sm text-white/60">{activeEvent.speaker}</p>}
                 <div className="mt-5 grid w-full gap-2 border-y border-white/10 py-4 text-left text-xs text-white/65 sm:grid-cols-2 sm:gap-4">
