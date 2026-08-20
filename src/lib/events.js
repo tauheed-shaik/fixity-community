@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'fixity_community_events'
 const AUTH_KEY = 'fixity_admin_auth'
-const EVENTS_API_URL = import.meta.env.VITE_EVENTS_API_URL || ''
+const EVENTS_API_URL = import.meta.env.VITE_EVENTS_API_URL || '/api/events'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
