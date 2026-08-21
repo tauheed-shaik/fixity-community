@@ -25,8 +25,6 @@ export default function LiveEventsTicker() {
 
   const track = useMemo(() => [...half, ...half], [half])
 
-  if (!items.length) return null
-
   const activeEvent = events.find(
     (event) => !dismissed.includes(event.id) && (event.live || new Date(event.startAt) > new Date())
   )
@@ -86,51 +84,53 @@ export default function LiveEventsTicker() {
         </aside>
       )}
 
-      <section
-        aria-label="Live events ticker"
-        className="relative bg-gradient-to-r from-deep-navy via-[#0d0a4a] to-deep-navy border-y border-green/20 overflow-hidden"
-      >
-        <div className="section-container py-2.5">
-          <div className="flex items-center gap-3 min-h-[40px]">
-            <span className="inline-flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-full bg-green/15 border border-green/40 text-green text-[10px] font-extrabold uppercase tracking-wider z-10">
-              <Radio className="w-3 h-3 animate-pulse" />
-              Live
-            </span>
+      {items.length > 0 && (
+        <section
+          aria-label="Live events ticker"
+          className="relative bg-gradient-to-r from-deep-navy via-[#0d0a4a] to-deep-navy border-y border-green/20 overflow-hidden"
+        >
+          <div className="section-container py-2.5">
+            <div className="flex items-center gap-3 min-h-[40px]">
+              <span className="inline-flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-full bg-green/15 border border-green/40 text-green text-[10px] font-extrabold uppercase tracking-wider z-10">
+                <Radio className="w-3 h-3 animate-pulse" />
+                Live
+              </span>
 
-          <div
-            className="relative flex-1 min-w-0 overflow-hidden mask-ticker"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            onFocusCapture={() => setPaused(true)}
-            onBlurCapture={() => setPaused(false)}
-          >
-            <div
-              className="flex w-max items-center whitespace-nowrap"
-              style={{
-                animation: `ticker-scroll ${duration}s linear infinite`,
-                animationPlayState: paused ? 'paused' : 'running',
-              }}
-            >
-              {track.map((event, i) => (
-                <button
-                  key={`${event.id}-${i}`}
-                  type="button"
-                  onClick={() => focusEvent(event.id)}
-                  className="inline-flex items-center gap-2 px-5 text-white/90 text-xs sm:text-sm font-medium hover:text-primary-yellow transition-colors"
-                  data-cursor="link"
+              <div
+                className="relative flex-1 min-w-0 overflow-hidden mask-ticker"
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                onFocusCapture={() => setPaused(true)}
+                onBlurCapture={() => setPaused(false)}
+              >
+                <div
+                  className="flex w-max items-center whitespace-nowrap"
+                  style={{
+                    animation: `ticker-scroll ${duration}s linear infinite`,
+                    animationPlayState: paused ? 'paused' : 'running',
+                  }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-green shrink-0 animate-pulse" />
-                  <span>{event.label}</span>
-                  <span className="text-white/25 pl-5" aria-hidden>
-                    •
-                  </span>
-                </button>
-              ))}
+                  {track.map((event, i) => (
+                    <button
+                      key={`${event.id}-${i}`}
+                      type="button"
+                      onClick={() => focusEvent(event.id)}
+                      className="inline-flex items-center gap-2 px-5 text-white/90 text-xs sm:text-sm font-medium hover:text-primary-yellow transition-colors"
+                      data-cursor="link"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-green shrink-0 animate-pulse" />
+                      <span>{event.label}</span>
+                      <span className="text-white/25 pl-5" aria-hidden>
+                        •
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   )
 }
