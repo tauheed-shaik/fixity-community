@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
 import { CalendarDays, MapPin, Radio, X } from 'lucide-react'
 import { useEvents } from '../context/EventsContext'
+import { useJoinModal } from '../context/JoinModalContext'
 
 export default function LiveEventsTicker() {
   const { events, liveEvents, focusEvent } = useEvents()
+  const { openJoin } = useJoinModal()
   const [paused, setPaused] = useState(false)
   const [dismissed, setDismissed] = useState([])
 
@@ -68,16 +70,28 @@ export default function LiveEventsTicker() {
                   <p className="flex items-center gap-2"><CalendarDays className="h-4 w-4 shrink-0 text-green" />{activeEvent.time}</p>
                   <p className="flex items-center gap-2 truncate"><MapPin className="h-4 w-4 shrink-0 text-green" />{activeEvent.location}</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDismissed((current) => [...current, activeEvent.id])
-                    focusEvent(activeEvent.id)
-                  }}
-                  className="mt-6 w-full rounded-lg bg-primary-yellow px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-dark-navy transition-transform hover:scale-[1.02]"
-                >
-                  View event details
-                </button>
+                <div className="mt-6 grid w-full gap-2 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDismissed((current) => [...current, activeEvent.id])
+                      focusEvent(activeEvent.id)
+                    }}
+                    className="w-full rounded-lg border border-white/20 px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-white transition-colors hover:border-white/50 hover:bg-white/10"
+                  >
+                    View details
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDismissed((current) => [...current, activeEvent.id])
+                      openJoin(activeEvent.id)
+                    }}
+                    className="w-full rounded-lg bg-primary-yellow px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-dark-navy transition-transform hover:scale-[1.02]"
+                  >
+                    Register now
+                  </button>
+                </div>
               </div>
             </div>
           </div>
