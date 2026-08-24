@@ -26,6 +26,7 @@ import {
   FormSuccess,
   formControlClass,
 } from './ui/FormUI'
+import { getEventPricing } from '../lib/events'
 
 const roles = ['Student', 'Graduate', 'Working Professional', 'Educator', 'Career Switcher', 'Other']
 const years = ['1st Year', '2nd Year', '3rd Year', 'Final Year', 'Passed Out', 'Not Applicable']
@@ -60,6 +61,7 @@ const initialForm = {
   eventId: '',
   linkedin: '',
   reason: '',
+  couponCode: '',
   consent: false,
 }
 
@@ -70,8 +72,10 @@ export default function JoinCommunityForm() {
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
+  const [appliedCouponCode, setAppliedCouponCode] = useState('')
 
   useEffect(() => {
+    setAppliedCouponCode('')
     setForm((f) => ({
       ...f,
       eventId: selectedEventId || '',
@@ -80,6 +84,7 @@ export default function JoinCommunityForm() {
   }, [selectedEventId])
 
   const selectedEvent = events.find((e) => e.id === form.eventId)
+  const pricing = getEventPricing(selectedEvent, appliedCouponCode)
 
   const validate = () => {
     const e = {}
@@ -91,6 +96,7 @@ export default function JoinCommunityForm() {
     if (!form.college.trim()) e.college = 'College / organization is required'
     if (!form.skill) e.skill = 'Select a skill interest'
     if (!form.participation) e.participation = 'Select how you want to participate'
+    if (selectedEvent && form.couponCode.trim() && !pricing.couponApplied) e.couponCode = 'Paste the code and click Apply to use this discount'
     if (!form.consent) e.consent = 'Please accept to continue'
     setErrors(e)
     return Object.keys(e).length === 0
@@ -101,7 +107,7 @@ export default function JoinCommunityForm() {
     if (!validate()) return
     setSending(true)
     try {
-      await submitToSheets('join', {
+      await submitToSheets(form.eventId ? 'event' : 'join', {
         fullName: form.name,
         email: form.email,
         mobile: form.mobile,
@@ -115,6 +121,10 @@ export default function JoinCommunityForm() {
         eventName: selectedEvent?.title || '',
         linkedin: form.linkedin,
         whyJoin: form.reason,
+        couponCode: form.couponCode.trim().toUpperCase(),
+        originalPrice: pricing.price,
+        discountPercent: pricing.discountPercent,
+        priceToPay: pricing.finalPrice,
       })
       setSubmitted(true)
     } finally {
@@ -124,7 +134,14 @@ export default function JoinCommunityForm() {
 
   const update = (field, value) => {
     setForm((f) => ({ ...f, [field]: value }))
+    if (field === 'couponCode') setAppliedCouponCode('')
     if (errors[field]) setErrors((e) => ({ ...e, [field]: undefined }))
+  }
+
+  const applyCoupon = () => {
+    const code = form.couponCode.trim().toUpperCase()
+    setAppliedCouponCode(code)
+    setErrors((current) => ({ ...current, couponCode: code && !getEventPricing(selectedEvent, code).couponApplied ? 'That coupon code is not valid for this event' : undefined }))
   }
 
   return (
@@ -159,7 +176,38 @@ export default function JoinCommunityForm() {
             />
 
             {selectedEvent ? (
-              <EventBanner title={selectedEvent.title} live={selectedEvent.live} />
+              <>
+                <EventBanner title={selectedEvent.title} live={selectedEvent.live} />
+                <div className="mb-5 rounded-xl border border-primary-yellow/25 bg-primary-yellow/10 px-4 py-3">
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="font-semibold text-text-gray">Price to pay</span>
+                    <strong className="text-lg font-black text-text-dark">
+                      {pricing.isFree ? 'FREE' : `INR ${pricing.finalPrice.toLocaleString()}`}
+                    </strong>
+                  </div>
+                  {pricing.couponApplied ? (
+                    <p className="mt-1 text-right text-[11px] font-semibold text-green">{pricing.discountPercent}% discount applied</p>
+                  ) : null}
+                  {pricing.hasCoupon && !pricing.couponApplied ? <p className="mt-1 text-right text-[11px] font-semibold text-green">Paste the copied code below and click Apply</p> : null}
+                </div>
+                {pricing.hasCoupon ? (
+                  <FormField id="join-coupon" label="Coupon code" optional error={errors.couponCode}>
+                    <div className="flex gap-2">
+                      <input
+                        id="join-coupon"
+                        type="text"
+                        placeholder="Paste copied code"
+                        value={form.couponCode}
+                        onChange={(e) => update('couponCode', e.target.value.toUpperCase())}
+                        className={formControlClass(Boolean(errors.couponCode))}
+                      />
+                      <button type="button" onClick={applyCoupon} className="shrink-0 rounded-xl bg-purple px-4 text-xs font-extrabold uppercase text-white hover:bg-purple-bright">
+                        Apply
+                      </button>
+                    </div>
+                  </FormField>
+                ) : null}
+              </>
             ) : null}
 
             {events.length > 0 && (

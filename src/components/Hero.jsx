@@ -1,5 +1,5 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import { Users, MapPin, Calendar, Briefcase, Building2, GraduationCap, Globe } from 'lucide-react'
 import { PrimaryButton, SecondaryButton, scrollToSection } from './ui/Shared'
 import { useJoinModal } from '../context/JoinModalContext'
@@ -25,15 +25,23 @@ const floatingIcons = [
   { label: '{ }', x: '82%', y: '74%', delay: 0.8, color: 'text-purple-bright' },
 ]
 
+const heroMessages = ["Don't Just Follow Tech Trends.", 'Be Part of Them.']
+
 export default function Hero() {
   const ref = useRef(null)
+  const [messageIndex, setMessageIndex] = useState(0)
   const { openJoin } = useJoinModal()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
 
+  useEffect(() => {
+    const timer = setInterval(() => setMessageIndex((index) => (index + 1) % heroMessages.length), 3200)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
-    <section id="home" ref={ref} className="relative min-h-screen bg-dark-navy overflow-hidden pt-[72px]">
+    <section id="home" ref={ref} className="relative min-h-screen bg-dark-navy overflow-hidden">
       <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 tech-grid opacity-40" />
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple/20 rounded-full blur-[120px]" />
@@ -47,43 +55,52 @@ export default function Hero() {
         ))}
       </motion.div>
 
-      <div className="section-container relative z-10 py-10 lg:py-16">
+      <div className="section-container relative z-10 pt-4 pb-10 lg:pt-8 lg:pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
-            <motion.p
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-purple-bright text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] mb-4"
+              className="relative mb-5 max-w-full text-2xl font-black leading-tight text-primary-yellow sm:text-3xl md:text-4xl"
             >
-              Vijayawada&apos;s Tech & Career Community
-            </motion.p>
+              Vijayawada&apos;s Tech &<br /> Career Community
+            </motion.h1>
 
-            <motion.h1
+            <motion.h2
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-4xl sm:text-5xl lg:text-[3.15rem] xl:text-[3.4rem] font-black leading-[1.05] tracking-tight uppercase mb-5"
+              className="mb-5 min-h-[2.25rem] max-w-xl text-2xl font-semibold leading-[1.12] text-white sm:min-h-[2.7rem] sm:text-3xl lg:min-h-[3.1rem] lg:text-4xl"
             >
-              <span className="text-white">Don&apos;t Just &nbsp;Follow Tech Trends.</span>
-              <br />
-              <span className="text-primary-yellow">Be Part of Them.</span>
-            </motion.h1>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={heroMessages[messageIndex]}
+                  initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.45, ease: 'easeOut' }}
+                  className="inline-block text-white"
+                >
+                  {heroMessages[messageIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </motion.h2>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
-              className="text-xl md:text-2xl font-bold gradient-text mb-4"
+              className="mb-4 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.18em] text-cyan sm:text-sm"
             >
-              Learn. Connect. Build. Grow.
+              <span>Learn</span><span className="text-white/30">·</span><span>Connect</span><span className="text-white/30">·</span><span>Build</span><span className="text-white/30">·</span><span>Grow</span>
             </motion.p>
 
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-white/70 text-base leading-relaxed mb-7 max-w-md"
+              className="mb-7 max-w-lg text-base leading-relaxed text-white/65 sm:text-lg"
             >
               A community that keeps you learning today, connected always and ahead tomorrow.
             </motion.p>
@@ -92,14 +109,14 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 }}
-              className="grid grid-cols-2 gap-2.5 mb-8 max-w-md"
+              className="mb-8 flex w-full max-w-xl flex-nowrap items-center justify-between gap-3 overflow-x-auto py-1"
             >
               {features.map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-cyan/20 bg-white/5 backdrop-blur-sm"
+                  className="flex shrink-0 items-center gap-1.5 whitespace-nowrap"
                 >
-                  <Icon className="w-4 h-4 text-cyan shrink-0" />
+                  <Icon className={`w-4 h-4 shrink-0 ${['text-cyan', 'text-primary-yellow', 'text-magenta', 'text-orange'][features.findIndex((feature) => feature.label === label)]}`} />
                   <span className="text-white/80 text-xs font-medium">{label}</span>
                 </div>
               ))}
@@ -172,8 +189,9 @@ export default function Hero() {
                 transition={{ delay: 0.65 }}
                 className="relative z-10 mt-5 text-center"
               >
-                <p className="text-white/40 text-[10px] uppercase tracking-widest mb-2">Exclusive Sessions</p>
-                <div className="flex items-center justify-center gap-7">
+                <div className="rounded-xl border border-primary-yellow/30 bg-primary-yellow/10 px-5 py-4 text-center shadow-[0_0_28px_rgba(255,196,0,0.12)]">
+                  <p className="text-primary-yellow text-[11px] uppercase tracking-widest mb-3">Exclusive Sessions With Professionals From</p>
+                  <div className="flex items-center justify-center gap-5">
                   {[
                     { name: 'Amazon', image: '/industry/amazon-white.png' },
                     { name: 'Microsoft', image: '/industry/microsoft.webp' },
@@ -187,6 +205,8 @@ export default function Hero() {
                       className="max-h-7 w-24 object-contain opacity-75"
                     />
                   ))}
+                  </div>
+                  <p className="text-white/60 text-[10px] uppercase tracking-widest mt-3">&amp; leading Tech Companies</p>
                 </div>
               </motion.div>
             </div>

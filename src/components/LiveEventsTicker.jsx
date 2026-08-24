@@ -1,18 +1,20 @@
 import { useMemo, useState } from 'react'
 import { Radio } from 'lucide-react'
 import { useEvents } from '../context/EventsContext'
+import { useJoinModal } from '../context/JoinModalContext'
 
 export default function LiveEventsTicker() {
-  const { liveEvents, focusEvent } = useEvents()
+  const { events } = useEvents()
+  const { openEvent } = useJoinModal()
   const [paused, setPaused] = useState(false)
 
   const items = useMemo(
     () =>
-      liveEvents.map((event) => ({
+      events.map((event) => ({
         ...event,
-        label: `${event.title}  ·  ${event.time}  ·  ${event.location}`,
+        label: `${event.title}  ·  ${event.day} ${event.month}  ·  ${event.time}`,
       })),
-    [liveEvents]
+    [events]
   )
 
   // Build one half wide enough, then duplicate for a seamless -50% scroll loop
@@ -31,13 +33,13 @@ export default function LiveEventsTicker() {
   return (
     <section
       aria-label="Live events notifications"
-      className="relative bg-gradient-to-r from-deep-navy via-[#0d0a4a] to-deep-navy border-y border-green/20 overflow-hidden"
+      className="relative overflow-hidden border-y border-white/10 bg-dark-navy"
     >
-      <div className="section-container py-2.5">
-        <div className="flex items-center gap-3 min-h-[40px]">
-          <span className="inline-flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-full bg-green/15 border border-green/40 text-green text-[10px] font-extrabold uppercase tracking-wider z-10">
+      <div className="section-container py-1.5">
+        <div className="flex min-h-[32px] items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 shrink-0 rounded-full border border-primary-yellow/60 bg-primary-yellow px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-dark-navy shadow-glow-yellow z-10">
             <Radio className="w-3 h-3 animate-pulse" />
-            Live
+            Events
           </span>
 
           <div
@@ -58,13 +60,14 @@ export default function LiveEventsTicker() {
                 <button
                   key={`${event.id}-${i}`}
                   type="button"
-                  onClick={() => focusEvent(event.id)}
-                  className="inline-flex items-center gap-2 px-5 text-white/90 text-xs sm:text-sm font-medium hover:text-primary-yellow transition-colors"
+                  onClick={() => openEvent(event.id)}
+                  className="inline-flex items-center gap-2 px-5 text-xs font-medium text-white/90 transition-colors hover:text-white sm:text-sm"
                   data-cursor="link"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-green shrink-0 animate-pulse" />
+                  <span className={`w-1.5 h-1.5 shrink-0 rounded-full ${event.live ? 'bg-green animate-pulse' : 'bg-primary-yellow'}`} />
+                  <span className={event.live ? 'text-green' : 'text-primary-yellow'}>{event.live ? 'Live' : 'Upcoming'}</span>
                   <span>{event.label}</span>
-                  <span className="text-white/25 pl-5" aria-hidden>
+                  <span className="pl-5 text-white/25" aria-hidden>
                     •
                   </span>
                 </button>

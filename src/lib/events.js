@@ -96,6 +96,28 @@ export function formatEventTimeRange(event) {
   return `${fmt(event.startAt)} – ${fmt(event.endAt)}`
 }
 
+export function getEventPricing(event, couponCode = '') {
+  const price = Math.max(0, Number(event?.price) || 0)
+  const configuredDiscount = Math.min(100, Math.max(0, Number(event?.couponDiscount) || 0))
+  const configuredCode = String(event?.couponCode || '').trim().toUpperCase()
+  const enteredCode = String(couponCode || '').trim().toUpperCase()
+  const couponApplied = Boolean(configuredCode && enteredCode && configuredCode === enteredCode)
+  const discountPercent = couponApplied ? configuredDiscount : 0
+  const discountAmount = Math.round((price * discountPercent) / 100)
+  const finalPrice = Math.max(0, price - discountAmount)
+
+  return {
+    price,
+    discountPercent,
+    discountAmount,
+    finalPrice,
+    couponApplied,
+    hasCoupon: Boolean(configuredCode && configuredDiscount > 0),
+    hasFreeCoupon: Boolean(configuredCode && configuredDiscount === 100),
+    isFree: price === 0 || Boolean(couponApplied && configuredDiscount === 100),
+  }
+}
+
 export function toDatetimeLocalValue(iso) {
   if (!iso) return ''
   const d = new Date(iso)

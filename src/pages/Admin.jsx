@@ -17,6 +17,10 @@ const emptyForm = {
   startAt: '',
   endAt: '',
   address: '',
+  description: '',
+  price: '0',
+  couponCode: '',
+  couponDiscount: '0',
 }
 
 export default function Admin() {
@@ -71,6 +75,10 @@ export default function Admin() {
       startAt: toDatetimeLocalValue(event.startAt),
       endAt: toDatetimeLocalValue(event.endAt),
       address: event.address || '',
+      description: event.description || '',
+      price: String(event.price ?? 0),
+      couponCode: event.couponCode || '',
+      couponDiscount: String(event.couponDiscount ?? 0),
     })
     setFormError('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -91,6 +99,10 @@ export default function Admin() {
       startAt: fromDatetimeLocalValue(form.startAt),
       endAt: fromDatetimeLocalValue(form.endAt),
       address: form.address.trim(),
+      description: form.description.trim(),
+      price: Math.max(0, Number(form.price) || 0),
+      couponCode: form.couponCode.trim().toUpperCase(),
+      couponDiscount: Math.min(100, Math.max(0, Number(form.couponDiscount) || 0)),
     }
 
     if (editingId) updateEvent(editingId, payload)
@@ -191,6 +203,15 @@ export default function Admin() {
                 placeholder="e.g. By Amazon Tech Lead"
               />
             </div>
+            <div className="md:col-span-2">
+              <label className="block text-text-gray text-xs mb-1">Event description (optional)</label>
+              <textarea
+                value={form.description}
+                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                className="w-full min-h-[100px] px-3 py-2.5 rounded-lg border border-border-light focus:outline-none focus:border-purple"
+                placeholder="Describe what attendees will learn or experience."
+              />
+            </div>
             <div>
               <label className="block text-text-gray text-xs mb-1">Start (date & time)</label>
               <input
@@ -216,6 +237,38 @@ export default function Admin() {
                 onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
                 className="w-full px-3 py-2.5 rounded-lg border border-border-light focus:outline-none focus:border-purple"
                 placeholder="FixityEdx Office, Vijayawada"
+              />
+            </div>
+            <div>
+              <label className="block text-text-gray text-xs mb-1">Price (INR)</label>
+              <input
+                type="number"
+                min="0"
+                value={form.price}
+                onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+                className="w-full px-3 py-2.5 rounded-lg border border-border-light focus:outline-none focus:border-purple"
+                placeholder="0"
+              />
+            </div>
+            <div>
+              <label className="block text-text-gray text-xs mb-1">Public coupon code (optional)</label>
+              <input
+                value={form.couponCode}
+                onChange={(e) => setForm((f) => ({ ...f, couponCode: e.target.value.toUpperCase() }))}
+                className="w-full px-3 py-2.5 rounded-lg border border-border-light focus:outline-none focus:border-purple uppercase"
+                placeholder="e.g. FIXITY50"
+              />
+            </div>
+            <div>
+              <label className="block text-text-gray text-xs mb-1">Coupon discount (%)</label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={form.couponDiscount}
+                onChange={(e) => setForm((f) => ({ ...f, couponDiscount: e.target.value }))}
+                className="w-full px-3 py-2.5 rounded-lg border border-border-light focus:outline-none focus:border-purple"
+                placeholder="100 = Free event"
               />
             </div>
             <p className="md:col-span-2 text-text-gray text-xs">
@@ -274,6 +327,10 @@ export default function Admin() {
                         {new Date(event.startAt).toLocaleString()} → {new Date(event.endAt).toLocaleString()}
                       </p>
                       <p className="text-text-gray text-xs">{event.address}</p>
+                      <p className="text-text-gray text-xs mt-1">
+                        {Number(event.price) > 0 ? `INR ${Number(event.price).toLocaleString()}` : 'Free'}
+                        {event.couponCode ? ` · ${event.couponCode} (${event.couponDiscount || 0}% off)` : ''}
+                      </p>
                     </div>
                     <div className="flex gap-2 shrink-0">
                       <button

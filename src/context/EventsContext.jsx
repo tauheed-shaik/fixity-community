@@ -24,6 +24,21 @@ export function EventsProvider({ children }) {
     saveEvents(events)
   }, [events])
 
+  useEffect(() => {
+    const syncEvents = (event) => {
+      if (event.key !== 'fixity_community_events' || !event.newValue) return
+      try {
+        const parsed = JSON.parse(event.newValue)
+        if (Array.isArray(parsed)) setEvents(parsed)
+      } catch {
+        /* ignore malformed external storage updates */
+      }
+    }
+
+    window.addEventListener('storage', syncEvents)
+    return () => window.removeEventListener('storage', syncEvents)
+  }, [])
+
   const enriched = useMemo(
     () =>
       events
@@ -35,6 +50,10 @@ export function EventsProvider({ children }) {
           time: formatEventTimeRange(event),
           location: event.address,
           speaker: event.subtitle || '',
+          description: event.description || '',
+          price: Math.max(0, Number(event.price) || 0),
+          couponCode: event.couponCode || '',
+          couponDiscount: Math.min(100, Math.max(0, Number(event.couponDiscount) || 0)),
         }))
         .sort((a, b) => new Date(a.startAt) - new Date(b.startAt)),
     [events, now]

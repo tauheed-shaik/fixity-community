@@ -50,7 +50,7 @@ export default function Navbar() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-dark-navy/90 backdrop-blur-[18px] border-b border-white/10 shadow-[0_4px_30px_rgba(5,5,43,0.5)]'
-          : 'bg-dark-navy/70 backdrop-blur-sm border-b border-white/5'
+          : 'bg-dark-navy border-b border-white/5'
       }`}
     >
       <div className="section-container">

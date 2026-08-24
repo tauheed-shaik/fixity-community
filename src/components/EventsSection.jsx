@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight, Clock, MapPin, Mic, Calendar, Users, Buildin
 import { SectionHeading } from './ui/Shared'
 import { useJoinModal } from '../context/JoinModalContext'
 import { useEvents } from '../context/EventsContext'
+import { getEventPricing } from '../lib/events'
+import CouponCode from './CouponCode'
 
 const stats = [
   { value: 100, suffix: '+', label: 'Industry Sessions', icon: Mic },
@@ -63,7 +65,8 @@ function StatCounter({ value, suffix, label, icon: Icon, index }) {
   )
 }
 
-function EventCard({ event, onRegister, focused }) {
+function EventCard({ event, onView, onRegister, focused }) {
+  const pricing = getEventPricing(event)
   return (
     <article
       id={`event-card-${event.id}`}
@@ -86,6 +89,12 @@ function EventCard({ event, onRegister, focused }) {
           </span>
         )}
         <h3 className="text-white font-bold text-sm mb-1 truncate">{event.title}</h3>
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[10px] font-bold text-primary-yellow">
+            {pricing.price === 0 ? 'FREE' : `INR ${pricing.price.toLocaleString()}`}
+          </span>
+        </div>
+        {pricing.hasCoupon ? <CouponCode code={event.couponCode} discount={event.couponDiscount} /> : null}
         {event.speaker ? <p className="text-white/55 text-[11px] mb-2">{event.speaker}</p> : null}
         <p className="text-white/40 text-[10px] flex items-center gap-1.5">
           <Clock className="w-3 h-3 shrink-0" /> {event.time}
@@ -93,21 +102,21 @@ function EventCard({ event, onRegister, focused }) {
         <p className="text-white/40 text-[10px] flex items-center gap-1.5 mb-3">
           <MapPin className="w-3 h-3 shrink-0" /> {event.location}
         </p>
-        <button
-          type="button"
-          onClick={() => onRegister(event.id)}
-          data-cursor="button"
-          className="mt-auto self-start px-4 py-1.5 border border-purple text-white text-[10px] font-bold uppercase rounded-md hover:bg-purple transition-colors"
-        >
-          Register Now
-        </button>
+        <div className="mt-auto flex flex-wrap gap-2">
+          <button type="button" onClick={() => onView(event.id)} data-cursor="button" className="px-3 py-1.5 border border-white/20 text-white text-[10px] font-bold uppercase rounded-md hover:border-cyan hover:text-cyan transition-colors">
+            View Event
+          </button>
+          <button type="button" onClick={() => onRegister(event.id)} data-cursor="button" className="px-3 py-1.5 bg-primary-yellow text-dark-navy text-[10px] font-bold uppercase rounded-md hover:bg-bright-yellow transition-colors">
+            Register Now
+          </button>
+        </div>
       </div>
     </article>
   )
 }
 
 export default function EventsSection() {
-  const { openJoin } = useJoinModal()
+  const { openJoin, openEvent } = useJoinModal()
   const { events, focusEventId, clearFocusEvent } = useEvents()
   const start = Math.max(events.length, 1)
   const [index, setIndex] = useState(start)
@@ -246,6 +255,7 @@ export default function EventsSection() {
                   >
                     <EventCard
                       event={event}
+                      onView={openEvent}
                       onRegister={openJoin}
                       focused={focusEventId === event.id}
                     />

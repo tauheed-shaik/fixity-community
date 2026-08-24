@@ -17,6 +17,14 @@ export function JoinModalProvider({ children }) {
         mode,
         open: Boolean(mode),
         selectedEventId,
+        openEvents: () => {
+          setSelectedEventId(null)
+          setMode('events')
+        },
+        openEvent: (eventId) => {
+          setSelectedEventId(eventId)
+          setMode('event')
+        },
         openJoin: (eventId = null) => {
           setSelectedEventId(eventId || null)
           setMode('join')

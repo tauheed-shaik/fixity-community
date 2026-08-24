@@ -1,5 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 
+export const WHATSAPP_COMMUNITY_URL = 'https://chat.whatsapp.com/BvxBHOyVSr08Bkh1k0oOvV'
+
 export function FormShell({ children, accent = 'yellow' }) {
   const accentBar =
     accent === 'purple'
@@ -135,6 +137,14 @@ export function FormSuccess({ title, message, icon: Icon }) {
       </div>
       <h3 className="text-text-dark text-xl font-extrabold mb-2">{title}</h3>
       <p className="text-text-gray text-sm leading-relaxed max-w-xs mx-auto">{message}</p>
+      <a
+        href={WHATSAPP_COMMUNITY_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex mt-6 rounded-xl bg-[#25D366] px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-white shadow-[0_10px_24px_rgba(37,211,102,0.25)] transition-transform hover:-translate-y-0.5"
+      >
+        Stay updated on WhatsApp
+      </a>
     </div>
   )
 }

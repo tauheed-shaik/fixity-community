@@ -1,6 +1,7 @@
 const STORAGE_KEYS = {
   join: 'fixity_join_community_submissions',
   enquire: 'fixity_enquire_submissions',
+  event: 'fixity_event_registrations',
 }
 
 /**

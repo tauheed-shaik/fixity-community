@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion'
 import { SectionHeading } from './ui/Shared'
+import { UserPlus, Compass, BookOpen, Network, Hammer, Crown } from 'lucide-react'
 
 const steps = [
-  { num: '01', title: 'Join', desc: 'Become part of our vibrant community.', color: 'bg-purple', ring: 'ring-purple/30' },
-  { num: '02', title: 'Explore', desc: 'Attend free sessions, events, workshops and challenges.', color: 'bg-magenta', ring: 'ring-magenta/30' },
-  { num: '03', title: 'Learn', desc: 'Follow structured learning pathways and skill programs.', color: 'bg-green', ring: 'ring-green/30' },
-  { num: '04', title: 'Connect', desc: 'Meet industry experts, mentors & fellow learners.', color: 'bg-orange', ring: 'ring-orange/30' },
-  { num: '05', title: 'Build', desc: 'Work on projects, solve real-world problems.', color: 'bg-electric-blue', ring: 'ring-electric-blue/30' },
-  { num: '06', title: 'Lead', desc: 'Become a Tech Ambassador and lead the community.', color: 'bg-cyan', ring: 'ring-cyan/30' },
+  { num: '01', title: 'Join', icon: UserPlus, desc: 'Become part of our vibrant community.', color: 'bg-purple', ring: 'ring-purple/30' },
+  { num: '02', title: 'Explore', icon: Compass, desc: 'Attend free sessions, events, workshops and challenges.', color: 'bg-magenta', ring: 'ring-magenta/30' },
+  { num: '03', title: 'Learn', icon: BookOpen, desc: 'Follow structured learning pathways and skill programs.', color: 'bg-green', ring: 'ring-green/30' },
+  { num: '04', title: 'Connect', icon: Network, desc: 'Meet industry experts, mentors & fellow learners.', color: 'bg-orange', ring: 'ring-orange/30' },
+  { num: '05', title: 'Build', icon: Hammer, desc: 'Work on projects, solve real-world problems.', color: 'bg-electric-blue', ring: 'ring-electric-blue/30' },
+  { num: '06', title: 'Lead', icon: Crown, desc: 'Become a Tech Ambassador and lead the community.', color: 'bg-cyan', ring: 'ring-cyan/30' },
 ]
 
 export default function LearningJourney() {
@@ -32,11 +33,14 @@ export default function LearningJourney() {
                 <motion.div
                   whileInView={{ boxShadow: '0 0 20px rgba(91,18,214,0.4)' }}
                   viewport={{ once: true }}
-                  className={`relative z-10 w-[4.5rem] h-[4.5rem] rounded-full ${step.color} ring-4 ${step.ring} flex flex-col items-center justify-center text-white mb-4`}
+                  className={`relative z-10 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full ${step.color} text-white ring-4 ${step.ring} mb-3`}
                 >
-                  <span className="text-[10px] font-bold opacity-80">{step.num}</span>
-                  <span className="text-xs font-extrabold uppercase">{step.title}</span>
+                  <step.icon className="h-6 w-6" />
                 </motion.div>
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-text-gray">{step.num}</span>
+                  <h3 className="text-xs font-extrabold uppercase text-text-dark">{step.title}</h3>
+                </div>
                 <p className="text-text-gray text-[11px] leading-relaxed max-w-[140px]">{step.desc}</p>
               </motion.div>
             ))}
@@ -57,10 +61,13 @@ export default function LearningJourney() {
                 className="relative flex gap-4"
               >
                 <div className={`absolute -left-8 w-9 h-9 rounded-full ${step.color} flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
-                  {step.num}
+                  <step.icon className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm uppercase text-text-dark mb-1">{step.title}</h3>
+                  <h3 className="mb-1 flex items-center gap-2 font-extrabold text-sm uppercase text-text-dark">
+                    <span className="text-[10px] text-text-gray">{step.num}</span>
+                    {step.title}
+                  </h3>
                   <p className="text-text-gray text-sm">{step.desc}</p>
                 </div>
               </motion.div>

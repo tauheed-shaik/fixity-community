@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import EnquiryForm from './EnquiryForm'
 import JoinCommunityForm from './JoinCommunityForm'
+import EventPreview from './EventPreview'
+import EventRegistration from './EventRegistration'
 import { useJoinModal } from '../context/JoinModalContext'
 
 export default function JoinModal() {
@@ -22,8 +24,8 @@ export default function JoinModal() {
     }
   }, [open, closeJoin])
 
-  const labelledBy = mode === 'enquire' ? 'enquire-modal-title' : 'join-modal-title'
-  const closeLabel = mode === 'enquire' ? 'Close enquiry form' : 'Close join community form'
+  const labelledBy = mode === 'enquire' ? 'enquire-modal-title' : mode === 'event' ? 'event-modal-title' : mode === 'events' ? 'events-modal-title' : 'join-modal-title'
+  const closeLabel = mode === 'enquire' ? 'Close enquiry form' : mode === 'event' || mode === 'events' ? 'Close event details' : 'Close join community form'
 
   return (
     <AnimatePresence>
@@ -47,8 +49,8 @@ export default function JoinModal() {
             role="dialog"
             aria-modal="true"
             aria-labelledby={labelledBy}
-            className={`relative z-10 w-full max-h-[92vh] overflow-y-auto rounded-2xl ${
-              mode === 'join' ? 'max-w-[560px]' : 'max-w-[480px]'
+            className={`relative z-10 w-full max-h-[92vh] overflow-hidden rounded-2xl ${
+              mode === 'event' || mode === 'events' || mode === 'join' ? 'max-w-[960px]' : 'max-w-[480px]'
             }`}
             initial={{ opacity: 0, y: 24, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -64,7 +66,7 @@ export default function JoinModal() {
             >
               <X className="w-4 h-4" />
             </button>
-            {mode === 'enquire' ? <EnquiryForm /> : <JoinCommunityForm />}
+            {mode === 'enquire' ? <EnquiryForm /> : mode === 'event' || mode === 'events' ? <EventPreview /> : <EventRegistration />}
           </motion.div>
         </motion.div>
       )}
