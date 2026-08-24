@@ -91,7 +91,6 @@ export default function EventPreview() {
           <p className="flex items-center gap-3"><MapPin className="h-4 w-4 text-orange" />{event.location}</p>
           <p className="flex items-center gap-3"><span className="w-4 text-center text-primary-yellow">₹</span>{pricing.price === 0 ? 'Free event' : `Price: INR ${pricing.price.toLocaleString()}`}</p>
           {pricing.hasCoupon ? <div className="ml-7"><CouponCode code={event.couponCode} discount={event.couponDiscount} /></div> : null}
-          <p className="flex items-center gap-3"><span className="w-4 text-center text-primary-yellow">₹</span>{pricing.price === 0 ? 'Free event' : `Price: INR ${pricing.price.toLocaleString()}`}</p>
         </div>
       </div>
       <div className="relative flex items-center justify-center overflow-hidden p-7 sm:p-10">

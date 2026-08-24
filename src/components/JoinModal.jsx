@@ -49,7 +49,9 @@ export default function JoinModal() {
             role="dialog"
             aria-modal="true"
             aria-labelledby={labelledBy}
-            className={`relative z-10 w-full max-h-[92vh] overflow-hidden rounded-2xl ${
+            className={`relative z-10 w-full max-h-[92vh] rounded-2xl ${
+              mode === 'enquire' || mode === 'join' ? 'overflow-y-auto' : 'overflow-hidden'
+            } ${
               mode === 'event' || mode === 'events' || mode === 'join' ? 'max-w-[960px]' : 'max-w-[480px]'
             }`}
             initial={{ opacity: 0, y: 24, scale: 0.96 }}
