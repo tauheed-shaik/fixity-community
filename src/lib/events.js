@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'fixity_community_events'
 const AUTH_KEY = 'fixity_admin_auth'
+const EVENTS_API_URL = import.meta.env.VITE_EVENTS_API_URL || '/api/events'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -67,6 +68,23 @@ export function loadEvents() {
 
 export function saveEvents(events) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(events))
+}
+
+export async function loadSharedEvents() {
+  const response = await fetch(EVENTS_API_URL, { cache: 'no-store' })
+  if (!response.ok) throw new Error(`Events API returned ${response.status}`)
+  const payload = await response.json()
+  const events = Array.isArray(payload) ? payload : payload.events
+  return Array.isArray(events) ? events : null
+}
+
+export async function saveSharedEvents(events) {
+  const response = await fetch(EVENTS_API_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ events }),
+  })
+  if (!response.ok) throw new Error(`Events API returned ${response.status}`)
 }
 
 export function isEventLive(event, now = new Date()) {

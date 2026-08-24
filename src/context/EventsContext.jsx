@@ -5,7 +5,9 @@ import {
   formatEventTimeRange,
   isEventLive,
   loadEvents,
+  loadSharedEvents,
   saveEvents,
+  saveSharedEvents,
 } from '../lib/events'
 
 const EventsContext = createContext(null)
@@ -18,6 +20,28 @@ export function EventsProvider({ children }) {
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 30000)
     return () => clearInterval(tick)
+  }, [])
+
+  useEffect(() => {
+    let active = true
+    const sync = async () => {
+      try {
+        const shared = await loadSharedEvents()
+        if (active && shared) {
+          setEvents(shared)
+          saveEvents(shared)
+        }
+      } catch {
+        // Keep the local cache when the shared store is unavailable.
+      }
+    }
+
+    sync()
+    const timer = setInterval(sync, 15000)
+    return () => {
+      active = false
+      clearInterval(timer)
+    }
   }, [])
 
   useEffect(() => {
@@ -62,21 +86,27 @@ export function EventsProvider({ children }) {
   const liveEvents = useMemo(() => enriched.filter((e) => e.live), [enriched])
 
   const addEvent = useCallback((event) => {
-    setEvents((prev) => [
-      ...prev,
-      {
-        ...event,
-        id: event.id || `evt-${Date.now()}`,
-      },
-    ])
+    setEvents((prev) => {
+      const next = [...prev, { ...event, id: event.id || `evt-${Date.now()}` }]
+      saveSharedEvents(next).catch(() => {})
+      return next
+    })
   }, [])
 
   const updateEvent = useCallback((id, patch) => {
-    setEvents((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)))
+    setEvents((prev) => {
+      const next = prev.map((e) => (e.id === id ? { ...e, ...patch } : e))
+      saveSharedEvents(next).catch(() => {})
+      return next
+    })
   }, [])
 
   const deleteEvent = useCallback((id) => {
-    setEvents((prev) => prev.filter((e) => e.id !== id))
+    setEvents((prev) => {
+      const next = prev.filter((e) => e.id !== id)
+      saveSharedEvents(next).catch(() => {})
+      return next
+    })
   }, [])
 
   const focusEvent = useCallback((id) => {
