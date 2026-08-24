@@ -193,7 +193,7 @@ export default function Hero() {
                   <p className="text-primary-yellow text-[11px] uppercase tracking-widest mb-3">Exclusive Sessions With Professionals From</p>
                   <div className="flex items-center justify-center gap-5">
                   {[
-                    { name: 'Amazon', image: '/industry/amazon-white.png' },
+                    { name: 'AWS', image: '/industry/aws.webp' },
                     { name: 'Microsoft', image: '/industry/microsoft.webp' },
                     { name: 'Google', image: '/industry/google.png' },
                   ].map((company) => (
