@@ -193,8 +193,8 @@ export default function Hero() {
                   <p className="text-primary-yellow text-[11px] uppercase tracking-widest mb-3">Exclusive Sessions With Professionals From</p>
                   <div className="flex items-center justify-center gap-5">
                   {[
-                    { name: 'AWS', image: '/industry/aws.webp' },
-                    { name: 'Microsoft', image: '/industry/microsoft.webp' },
+                    { name: 'AWS', image: '/industry/aws.png' },
+                    { name: 'Microsoft', image: '/industry/microsoft.png' },
                     { name: 'Google', image: '/industry/google.png' },
                   ].map((company) => (
                     <img
@@ -202,7 +202,7 @@ export default function Hero() {
                       src={company.image}
                       alt={company.name}
                       loading="lazy"
-                      className="max-h-7 w-24 object-contain opacity-75"
+                      className={`object-contain opacity-75 ${company.name === 'Amazon' ? 'max-h-7 w-24' : 'max-h-9 w-32'}`}
                     />
                   ))}
                   </div>

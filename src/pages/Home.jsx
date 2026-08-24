@@ -31,8 +31,8 @@ export default function Home() {
           <LiveEventsTicker />
         </div>
         <Hero />
-        <CommunityBenefits />
         <LearningJourney />
+        <CommunityBenefits />
         <LearningEcosystem />
         <EventsSection />
         <CommunitySection />
