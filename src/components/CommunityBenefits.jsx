@@ -49,9 +49,10 @@ const benefits = [
 
 export default function CommunityBenefits() {
   return (
-    <section id="community" className="py-16 md:py-20 bg-white">
-      <div className="section-container">
-        <SectionHeading>Why Our Community is Different</SectionHeading>
+    <section id="community" className="relative overflow-hidden bg-dark-navy py-16 md:py-20">
+      <div className="pointer-events-none absolute inset-0 tech-grid opacity-20" />
+      <div className="section-container relative z-10">
+        <SectionHeading light>Why Our Community is Different</SectionHeading>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-5">
           {benefits.map((item, i) => (
