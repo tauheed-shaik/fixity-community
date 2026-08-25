@@ -4,17 +4,17 @@ import { useEvents } from '../context/EventsContext'
 import { useJoinModal } from '../context/JoinModalContext'
 
 export default function LiveEventsTicker() {
-  const { events } = useEvents()
+  const { upcomingEvents } = useEvents()
   const { openEvent } = useJoinModal()
   const [paused, setPaused] = useState(false)
 
   const items = useMemo(
     () =>
-      events.map((event) => ({
+      upcomingEvents.map((event) => ({
         ...event,
         label: `${event.title}  ·  ${event.day} ${event.month}  ·  ${event.time}`,
       })),
-    [events]
+    [upcomingEvents]
   )
 
   // Build one half wide enough, then duplicate for a seamless -50% scroll loop

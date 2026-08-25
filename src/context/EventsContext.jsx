@@ -4,6 +4,7 @@ import {
   formatEventMonth,
   formatEventTimeRange,
   isEventLive,
+  isEventUpcoming,
   loadEvents,
   loadSharedEvents,
   saveEvents,
@@ -84,6 +85,7 @@ export function EventsProvider({ children }) {
   )
 
   const liveEvents = useMemo(() => enriched.filter((e) => e.live), [enriched])
+  const upcomingEvents = useMemo(() => enriched.filter((event) => isEventUpcoming(event, now)), [enriched, now])
 
   const addEvent = useCallback((event) => {
     setEvents((prev) => {
@@ -124,6 +126,7 @@ export function EventsProvider({ children }) {
     <EventsContext.Provider
       value={{
         events: enriched,
+        upcomingEvents,
         rawEvents: events,
         liveEvents,
         addEvent,

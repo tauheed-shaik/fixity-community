@@ -95,6 +95,11 @@ export function isEventLive(event, now = new Date()) {
   return t >= start && t <= end
 }
 
+export function isEventUpcoming(event, now = new Date()) {
+  if (!event?.endAt) return false
+  return new Date(event.endAt).getTime() > now.getTime()
+}
+
 export function formatEventDay(event) {
   const d = new Date(event.startAt)
   return String(d.getDate()).padStart(2, '0')

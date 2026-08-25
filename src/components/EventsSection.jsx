@@ -117,7 +117,7 @@ function EventCard({ event, onView, onRegister, focused }) {
 
 export default function EventsSection() {
   const { openJoin, openEvent } = useJoinModal()
-  const { events, focusEventId, clearFocusEvent } = useEvents()
+  const { upcomingEvents: events, focusEventId, clearFocusEvent } = useEvents()
   const start = Math.max(events.length, 1)
   const [index, setIndex] = useState(start)
   const [paused, setPaused] = useState(false)

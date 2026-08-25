@@ -40,7 +40,7 @@ function EventCalendarCard({ item, onView, onRegister }) {
 
 export default function EventPreview() {
   const { selectedEventId, openEvents, openEvent, openJoin, closeJoin } = useJoinModal()
-  const { events } = useEvents()
+  const { upcomingEvents: events } = useEvents()
   const event = events.find((item) => item.id === selectedEventId)
 
   if (!event) {
