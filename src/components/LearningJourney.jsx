@@ -27,16 +27,30 @@ export default function LearningJourney() {
   const visibleStepsRef = useRef(1)
   const lastWheelTime = useRef(0)
   const unlockAtRef = useRef(0)
+  const touchStartYRef = useRef(null)
 
   useEffect(() => {
-    const handleWindowWheel = (event) => {
+    const revealNextStep = () => {
+      const now = Date.now()
+      if (visibleStepsRef.current >= journey.length || now - lastWheelTime.current < 450) return false
+
+      lastWheelTime.current = now
+      visibleStepsRef.current = Math.min(journey.length, visibleStepsRef.current + 1)
+      setVisibleSteps(visibleStepsRef.current)
+      if (visibleStepsRef.current === journey.length) unlockAtRef.current = now + 1200
+      return true
+    }
+
+    const journeyIsLocked = () => {
       const journeyBounds = journeyRef.current?.getBoundingClientRect()
       const lockPosition = 96
-      const journeyIsLocked = journeyBounds
+      return journeyBounds
         && journeyBounds.top <= lockPosition
         && journeyBounds.bottom > lockPosition
+    }
 
-      if (event.deltaY <= 0 || !journeyIsLocked) return
+    const handleWindowWheel = (event) => {
+      if (event.deltaY <= 0 || !journeyIsLocked()) return
 
       const now = Date.now()
       if (visibleStepsRef.current >= journey.length) {
@@ -45,16 +59,33 @@ export default function LearningJourney() {
       }
 
       event.preventDefault()
-      if (now - lastWheelTime.current < 450) return
+      revealNextStep()
+    }
 
-      lastWheelTime.current = now
-      visibleStepsRef.current = Math.min(journey.length, visibleStepsRef.current + 1)
-      setVisibleSteps(visibleStepsRef.current)
-      if (visibleStepsRef.current === journey.length) unlockAtRef.current = now + 1200
+    const handleTouchStart = (event) => {
+      touchStartYRef.current = event.touches[0]?.clientY ?? null
+    }
+
+    const handleTouchMove = (event) => {
+      const startY = touchStartYRef.current
+      const currentY = event.touches[0]?.clientY
+      if (startY === null || currentY === undefined || startY - currentY < 24 || !journeyIsLocked()) return
+
+      if (visibleStepsRef.current < journey.length || Date.now() < unlockAtRef.current) {
+        event.preventDefault()
+        revealNextStep()
+      }
+      touchStartYRef.current = currentY
     }
 
     window.addEventListener('wheel', handleWindowWheel, { passive: false })
-    return () => window.removeEventListener('wheel', handleWindowWheel)
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
+    return () => {
+      window.removeEventListener('wheel', handleWindowWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
+    }
   }, [])
 
   return (
