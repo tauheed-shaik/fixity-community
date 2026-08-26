@@ -1,4 +1,4 @@
-import { Linkedin, Instagram, Youtube, Github } from 'lucide-react'
+import { Linkedin, Instagram, Youtube, Github, MapPin } from 'lucide-react'
 import { scrollToSection } from './ui/Shared'
 import { useJoinModal } from '../context/JoinModalContext'
 
@@ -31,7 +31,7 @@ export default function Footer() {
   return (
     <footer id="about" className="bg-dark-navy border-t border-white/10 pt-12 pb-6">
       <div className="section-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+        <div className="grid grid-cols-1 gap-10 mb-10 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div>
             <img src="/Fixity-Logo.png" alt="FixityEdx" className="h-10 mb-3" />
@@ -94,6 +94,37 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+            <a
+              href="https://maps.app.goo.gl/NABkCD7qESygpQ5q8"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 flex max-w-xs items-start gap-2 text-sm leading-relaxed text-white/55 transition-colors hover:text-primary-yellow"
+            >
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary-yellow" />
+              <span>Fixity Edx, Shanthi Plaza, 4th Floor, Skillza Global, opp. STELLA CO, SBI RACPC, Benz Circle, Vijayawada, Andhra Pradesh 520008.</span>
+            </a>
+          </div>
+
+          {/* Location */}
+          <div className="md:col-span-2 lg:col-span-1">
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">Find Us</h4>
+            <a
+              href="https://maps.app.goo.gl/NABkCD7qESygpQ5q8"
+              target="_blank"
+              rel="noreferrer"
+              className="group block overflow-hidden rounded-lg border border-white/10 bg-white/5"
+              aria-label="Open FixityEdx location in Google Maps"
+            >
+              <div className="aspect-[16/10] w-full">
+                <iframe
+                  title="FixityEdx location map"
+                  src="https://www.google.com/maps?q=Fixity+Edx,+Shanthi+Plaza,+Benz+Circle,+Vijayawada,+Andhra+Pradesh+520008&output=embed"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="h-full w-full border-0 opacity-85 transition-opacity group-hover:opacity-100"
+                />
+              </div>
+            </a>
           </div>
         </div>
 

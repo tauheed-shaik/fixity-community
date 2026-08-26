@@ -6,6 +6,7 @@ import { useJoinModal } from '../context/JoinModalContext'
 
 const navLinks = [
   { label: 'Home', id: 'home' },
+  { label: 'Your Journey', id: 'journey' },
   { label: 'Community', id: 'community' },
   { label: 'Programs', id: 'programs' },
   { label: 'Events', id: 'events' },
